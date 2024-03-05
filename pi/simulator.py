@@ -51,7 +51,7 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     d_long, d_la =  getMovement(drone_coords, from_coords)
     while ((from_coords[0] - drone_coords[0])**2 + (from_coords[1] - drone_coords[1])**2)*10**6 > 0.0002:
         drone_coords = moveDrone(drone_coords, d_long, d_la)
-        send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
+        send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='busy')
         with requests.Session() as session:
             drone_info = {'id': id,
                           'longitude': drone_coords[0],
@@ -79,7 +79,7 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
 
     while ((to_coords[0] - drone_coords[0])**2 + (to_coords[1] - drone_coords[1])**2)*10**6 > 0.0002:
         drone_coords = moveDrone(drone_coords, d_long, d_la)
-        send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
+        send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='busy')
         with requests.Session() as session:
             drone_info = {'id': id,
                           'longitude': drone_coords[0],
@@ -98,7 +98,7 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
         file.write(str(drone_coords[0]) + '\n')
         file.write(str(drone_coords[1]) + '\n')
 
-    send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
+    send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='idle')
 
     pygame.mixer.music.stop()
     doorbell.play()
