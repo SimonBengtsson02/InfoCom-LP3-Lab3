@@ -8,7 +8,7 @@ sense = SenseHat()
 
 def getMovement(src, dst):
 
-    speed = 0.00003
+    speed = 0.00002
     dst_x, dst_y = dst
     x, y = src
     direction = math.sqrt((dst_x - x)**2 + (dst_y - y)**2)
@@ -51,6 +51,7 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     d_long, d_la =  getMovement(drone_coords, from_coords)
     while ((from_coords[0] - drone_coords[0])**2 + (from_coords[1] - drone_coords[1])**2)*10**6 > 0.0002:
         drone_coords = moveDrone(drone_coords, d_long, d_la)
+        send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
         with requests.Session() as session:
             drone_info = {'id': id,
                           'longitude': drone_coords[0],
@@ -59,6 +60,8 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
                         }
             resp = session.post(SERVER_URL, json=drone_info)
     d_long, d_la =  getMovement(drone_coords, to_coords)
+
+    send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
 
     pygame.mixer.music.stop()
     doorbell = pygame.mixer.Sound("doorbell-1.wav")
@@ -93,6 +96,8 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     with open('coords.txt', 'w') as file:
         file.write(str(drone_coords[0]) + '\n')
         file.write(str(drone_coords[1]) + '\n')
+
+    send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
 
     pygame.mixer.music.stop()
     doorbell.play()
