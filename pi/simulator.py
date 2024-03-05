@@ -2,7 +2,7 @@ import math
 import requests
 import argparse
 
-from sense_hat import sense_hat
+from sense_hat import SenseHat
 import pygame
 sense = SenseHat()
 
